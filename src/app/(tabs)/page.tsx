@@ -1,7 +1,9 @@
-import React from 'react'
 
-export const Page = () => {
+
+export default function Home() {
   return (
-    <div>page</div>
-  )
+    <>
+      First Path
+    </>
+  );
 }
