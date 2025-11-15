@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { Search } from "lucide-react";
+import { MapPinnedIcon, Search } from "lucide-react";
 
 export const Navbar = () => {
   return (
@@ -8,7 +8,9 @@ export const Navbar = () => {
       
       {/* Logo */}
       <Link href="/" className="flex items-center gap-x-3">
-        <div className="size-7 rounded-md bg-gray-200"></div>
+        <div className="size-7">
+          <img src="/favicon.ico" alt="InfoVoto.pe Logo" />
+        </div>
         <p className="font-bold text-lg">InfoVoto.pe</p>
       </Link>
 
@@ -16,14 +18,15 @@ export const Navbar = () => {
       <div className="flex items-center gap-x-5">
 
         {/* Botón de Buscar */}
-        <button className="flex items-center gap-x-2 text-sm font-semibold">
+        <button className="flex items-center gap-x-2 text-sm font-medium">
           <Search size={16} />
           <p>Buscar</p>
         </button>
 
         {/* Seleccionar tu región */}
         <Button>
-          Seleccionar tu región
+          <span className="hidden md:block">Seleccionar tu región</span> 
+          <MapPinnedIcon className="block md:hidden" />
         </Button>
       
       </div>

@@ -7,7 +7,7 @@ export default function ShopLayout({
 }) {
   return (
     <main className="min-h-screen w-full">
-      <div className="w-full max-w-[90rem] mx-auto">
+      <div className="w-full max-w-[80rem] mx-auto px-5">
         <Navbar />
         {children}
       </div>
