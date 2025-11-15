@@ -14,7 +14,7 @@ export const Groups = () => {
               Compara propuestas y conoce candidatos de tu región.
             </p>
           </div>
-          <Link href="/">
+          <Link href="/agrupaciones">
             <Button className="flex items-center gap-x-1 mt-2">
               <p className="hidden md:block">Ver más</p>
               <ChevronRight />

@@ -1,6 +1,7 @@
 import React from "react";
 import { NewCardGeneralPrincipal } from "./NewCardGeneralPrincipal";
 import { NewCardGeneral } from "./NewCardGeneral";
+import { Button } from '@/components/ui/button';
 
 export const NewsGeneralGrid = () => {
   return (
@@ -17,6 +18,8 @@ export const NewsGeneralGrid = () => {
         <NewCardGeneral />
         <NewCardGeneral />
       </div>
+
+      <Button className="text-base py-5 w-fit mx-auto">Cargar más</Button>
     </div>
   );
 };
