@@ -1,27 +1,32 @@
 import Link from "next/link";
-import React from "react";
 import { Button } from "../ui/button";
+import { Search } from "lucide-react";
 
 export const Navbar = () => {
   return (
-    <nav className="flex items-center gap-x-3 justify-between py-3">
+    <nav className="flex items-center gap-x-3 justify-between py-4">
       
       {/* Logo */}
-      <Link href="/">
+      <Link href="/" className="flex items-center gap-x-3">
+        <div className="size-7 rounded-md bg-gray-200"></div>
         <p className="font-bold text-lg">InfoVoto.pe</p>
       </Link>
 
-      {/* Menu Options */}
-      <div>
+      {/* Menú de opciones */}
+      <div className="flex items-center gap-x-5">
 
-        {/* Icon Search */}
+        {/* Botón de Buscar */}
+        <button className="flex items-center gap-x-2 text-sm font-semibold">
+          <Search size={16} />
+          <p>Buscar</p>
+        </button>
+
+        {/* Seleccionar tu región */}
         <Button>
-            first button
+          Seleccionar tu región
         </Button>
       
       </div>
-
-
     </nav>
   );
 };
