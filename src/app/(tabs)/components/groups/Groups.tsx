@@ -14,10 +14,12 @@ export const Groups = () => {
               Compara propuestas y conoce candidatos de tu región.
             </p>
           </div>
-          <Button className="flex items-center gap-x-1 mt-2">
-            <p className="hidden md:block">Ver más</p>
-            <ChevronRight />
-          </Button>
+          <Link href="/">
+            <Button className="flex items-center gap-x-1 mt-2">
+              <p className="hidden md:block">Ver más</p>
+              <ChevronRight />
+            </Button>
+          </Link>
         </div>
 
         {/* Grid de Agrupaciones */}
