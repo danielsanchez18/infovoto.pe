@@ -74,15 +74,15 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div className="flex flex-col text-center">
-      <h1 className="text-xl font-semibold">
+    <div className="flex flex-col text-center px-4 sm:px-6 lg:px-8">
+      <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-2 sm:mb-3">
         Cuenta atrás para las elecciones presidenciales 2026
       </h1>
-      <h2 className="text-sm text-gray-600">
+      <h2 className="text-xs sm:text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
         Mantente informado: revisa plazos de inscripción, debates y cómo votar
         para que estés listo el día de las elecciones.
       </h2>
-      <div className="mt-8 flex gap-10 items-center justify-center w-full">
+      <div className="mt-6 sm:mt-8 flex flex-wrap gap-3 sm:gap-6 md:gap-8 lg:gap-10 items-center justify-center w-full">
         <Slot value={timeRemaining.months} label="meses" />
         <Slot value={timeRemaining.days} label="días" />
         <Slot value={timeRemaining.hours} label="horas" />
