@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import { MapPinnedIcon, Search } from "lucide-react";
+import SearchDialog from "../searchDialog/SearchDialog";
+import RegionDialog from "../regionDialog";
 
 export const Navbar = () => {
   return (
@@ -18,16 +20,10 @@ export const Navbar = () => {
       <div className="flex items-center gap-x-5">
 
         {/* Botón de Buscar */}
-        <button className="flex items-center gap-x-2 text-sm font-medium">
-          <Search size={16} />
-          <p>Buscar</p>
-        </button>
+        <SearchDialog />
 
         {/* Seleccionar tu región */}
-        <Button>
-          <span className="hidden md:block">Seleccionar tu región</span> 
-          <MapPinnedIcon className="block md:hidden" />
-        </Button>
+        <RegionDialog />
       
       </div>
     </nav>
