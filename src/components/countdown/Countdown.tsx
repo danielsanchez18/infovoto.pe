@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Slot from "../slot/Slot";
 
 interface TimeRemaining {
@@ -17,11 +17,11 @@ export default function Countdown() {
     days: 0,
     hours: 0,
     minutes: 0,
-    seconds: 0
+    seconds: 0,
   });
 
   useEffect(() => {
-    const targetDate = new Date('2026-03-15T00:00:00');
+    const targetDate = new Date("2026-03-15T00:00:00");
 
     const calculateTimeRemaining = () => {
       const now = new Date();
@@ -36,14 +36,18 @@ export default function Countdown() {
             months++;
           }
         }
-        
+
         const afterMonths = new Date(now);
         afterMonths.setMonth(afterMonths.getMonth() + months);
         const remainingTime = targetDate.getTime() - afterMonths.getTime();
-        
+
         const days = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+        const hours = Math.floor(
+          (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+        );
         const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
         setTimeRemaining({
@@ -51,7 +55,7 @@ export default function Countdown() {
           days,
           hours,
           minutes,
-          seconds
+          seconds,
         });
       } else {
         setTimeRemaining({
@@ -59,7 +63,7 @@ export default function Countdown() {
           days: 0,
           hours: 0,
           minutes: 0,
-          seconds: 0
+          seconds: 0,
         });
       }
     };
@@ -70,12 +74,21 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div className='mt-8 flex gap-10 items-center justify-center w-full'>
-      <Slot value={timeRemaining.months} label="meses" />
-      <Slot value={timeRemaining.days} label="días" />
-      <Slot value={timeRemaining.hours} label="horas" />
-      <Slot value={timeRemaining.minutes} label="minutos" />
-      <Slot value={timeRemaining.seconds} label="segundos" />
+    <div className="flex flex-col text-center">
+      <h1 className="text-xl font-semibold">
+        !Cuenta atrás para las elecciones presidenciales 2026!
+      </h1>
+      <h2 className="text-sm text-gray-600">
+        Mantente informado: revisa plazos de inscripción, debates y cómo votar
+        para que estés listo el día de las elecciones.
+      </h2>
+      <div className="mt-8 flex gap-10 items-center justify-center w-full">
+        <Slot value={timeRemaining.months} label="meses" />
+        <Slot value={timeRemaining.days} label="días" />
+        <Slot value={timeRemaining.hours} label="horas" />
+        <Slot value={timeRemaining.minutes} label="minutos" />
+        <Slot value={timeRemaining.seconds} label="segundos" />
+      </div>
     </div>
-  )
+  );
 }
