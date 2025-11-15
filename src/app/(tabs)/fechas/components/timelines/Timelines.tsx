@@ -18,7 +18,7 @@ export default function Timelines() {
             Eventos
           </TabsTrigger>
           <TabsTrigger value="members" className="text-sm px-4 h-9 bg-primary/70 cursor-pointer text-white rounded-md data-[state=active]:bg-primary data-[state=active]:text-white">
-            Miémbros de mesa
+            Miembros de mesa
           </TabsTrigger>
         </TabsList>
       </div>
