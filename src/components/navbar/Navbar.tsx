@@ -53,13 +53,6 @@ export const Navbar = () => {
         <p>Información</p>
         <p>Guía</p>
       </div>
-          <img
-            src="/img/DecidePE - Logo.png"
-            alt="InfoVoto.pe Logo"
-            className="w-full h-full"
-          />
-        </div>
-      </Link>
 
       {/* Menú de opciones */}
       <div className="flex items-center gap-4">
@@ -82,6 +75,6 @@ export const Navbar = () => {
           </Link>
         )}
       </div>
-    </nav>
+    </nav >
   );
 };
