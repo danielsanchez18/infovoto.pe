@@ -159,7 +159,7 @@ export const PostCard = () => {
                 </Label>
                 <Input
                   id="link"
-                  defaultValue="https://infovoto-pe.vercel.app/candidato/86dc874a-1286-4d98-92f3-0f4b5978c185"
+                  defaultValue="https://decide-pe.vercel.app/candidato/86dc874a-1286-4d98-92f3-0f4b5978c185"
                   readOnly
                 />
               </div>
