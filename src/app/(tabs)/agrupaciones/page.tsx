@@ -8,8 +8,8 @@ import { Ranking } from "./components/ranking/Ranking";
 import { Button } from "@/components/ui/button";
 
 export default function AgrupacionesPage() {
-  const [candidate1, setCandidate1] = useState<string>("");
-  const [candidate2, setCandidate2] = useState<string>("");
+  const [candidate1, setCandidate1] = useState<string>("1");
+  const [candidate2, setCandidate2] = useState<string>("2");
 
   return (
     <div className='flex flex-col gap-5 py-10'>

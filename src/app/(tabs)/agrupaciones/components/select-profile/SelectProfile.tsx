@@ -93,9 +93,9 @@ export const SelectProfile = ({
                       key={candidate.id}
                       value={`${candidate.name} ${candidate.party}`}
                       onSelect={() => {
-                        onSelectCandidate(
-                          candidate.id === selectedCandidate ? "" : candidate.id
-                        );
+                        if (candidate.id !== selectedCandidate) {
+                          onSelectCandidate(candidate.id);
+                        }
                         setOpen(false);
                       }}
                       className="flex items-center text-sm font-medium gap-x-2 px-3 py-3.5"

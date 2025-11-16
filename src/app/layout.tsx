@@ -3,8 +3,11 @@ import "./globals.css";
 import { inter } from "@/config/fonts";
 
 export const metadata: Metadata = {
-  title: "InfoVoto",
+  title: "Decide Perú",
   description: "Plataforma de información para Elecciones 2026 - Perú",
+  icons: {
+    icon: "/icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -14,9 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={inter.className}
-      >
+      <body className={inter.className}>
         {children}
       </body>
     </html>
