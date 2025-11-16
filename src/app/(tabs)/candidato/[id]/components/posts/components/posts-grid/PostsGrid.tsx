@@ -1,4 +1,3 @@
-import React from 'react'
 import { PostCard } from '../post-card/PostCard'
 
 interface Post {
@@ -25,7 +24,7 @@ interface PostsGridProps {
 export const PostsGrid = ({ posts, candidateData }: PostsGridProps) => {
   if (posts.length === 0) {
     return (
-      <div className='grid gap-5 max-w-[40rem]'>
+      <div className='grid gap-5'>
         <p className='text-center text-gray-600 py-10'>
           Este candidato aún no ha publicado nada.
         </p>
@@ -34,7 +33,7 @@ export const PostsGrid = ({ posts, candidateData }: PostsGridProps) => {
   }
 
   return (
-    <div className='grid gap-5 max-w-[40rem]'>
+    <div className='grid gap-5'>
       {posts.map((post) => (
         <PostCard key={post.id} post={post} candidateData={candidateData} />
       ))}
