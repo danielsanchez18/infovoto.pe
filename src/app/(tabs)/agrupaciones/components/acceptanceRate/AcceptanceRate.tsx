@@ -18,12 +18,9 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { AcceptanceRateProps } from "./AcceptanceRate.types"
 
 export const description = "A radial chart with text"
-
-const chartData = [
-    { browser: "safari", visitors: 69, fill: "#a92c2c" },
-]
 
 const chartConfig = {
     visitors: {
@@ -35,7 +32,14 @@ const chartConfig = {
     },
 } satisfies ChartConfig
 
-export function AcceptanceRate() {
+export function AcceptanceRate({ voteCount, totalVotes }: AcceptanceRateProps) {
+    // Calcular porcentaje real basado en el total de votos
+    const percentage = totalVotes > 0 ? Math.round((voteCount / totalVotes) * 100) : 0;
+    
+    const chartData = [
+        { browser: "safari", visitors: percentage, fill: "#a92c2c" },
+    ]
+
     return (
         <div className="flex-1">
             <ChartContainer
@@ -73,14 +77,14 @@ export function AcceptanceRate() {
                                                 y={viewBox.cy}
                                                 className="text-4xl font-bold fill-white"
                                             >
-                                                {chartData[0].visitors.toLocaleString()}%
+                                                {percentage}%
                                             </tspan>
                                             <tspan
                                                 x={viewBox.cx}
                                                 y={(viewBox.cy || 0) + 24}
                                                 className="fill-gray-400 font-medium"
                                             >
-                                                1200 votos
+                                                {voteCount} votos
                                             </tspan>
                                         </text>
                                     )

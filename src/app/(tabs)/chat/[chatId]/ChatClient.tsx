@@ -79,33 +79,6 @@ export function ChatClient({ chatId }: ChatClientProps) {
         loadHistory();
     }, [chatId, setMessages]);
 
-    // Enviar mensaje inicial si viene de la URL
-    useEffect(() => {
-        // Solo ejecutar cuando haya terminado de cargar el historial
-        if (isLoadingHistory) return;
-        
-        const searchParams = new URLSearchParams(window.location.search);
-        const initialMessage = searchParams.get('initialMessage');
-        
-        // Solo enviar si hay un mensaje inicial y NO hay mensajes en el chat
-        if (initialMessage && messages.length === 0) {
-            console.log('📨 Enviando mensaje inicial:', initialMessage);
-            
-            // Limpiar el parámetro de la URL ANTES de enviar el mensaje
-            const url = new URL(window.location.href);
-            url.searchParams.delete('initialMessage');
-            window.history.replaceState({}, '', url.toString());
-            
-            // Enviar el mensaje automáticamente con un pequeño delay
-            // para asegurar que el componente esté listo
-            setTimeout(() => {
-                sendMessage({
-                    parts: [{ type: 'text', text: initialMessage }],
-                });
-            }, 100);
-        }
-    }, [isLoadingHistory, messages.length, sendMessage]);
-
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (!input.trim()) return;
@@ -140,7 +113,7 @@ export function ChatClient({ chatId }: ChatClientProps) {
                 <p><strong className='text-lg text-black'>Cicerón,</strong> por un voto consciente</p>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 px-0 space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 px-0 space-y-3 z-2 min-h-screen h-full pb-20">
                 {isLoadingHistory && (
                     <p className="text-xs text-muted-foreground text-center">
                         Cargando historial del chat...
@@ -195,7 +168,7 @@ export function ChatClient({ chatId }: ChatClientProps) {
                 )}
             </div>
 
-            <div className='fixed w-full bottom-10 max-w-[1255px]'>
+            <div className='fixed w-full bottom-10 max-w-[1255px] z-3'>
                 <form
                     onSubmit={handleSubmit}
                     className="p-3 px-0 flex gap-2"
@@ -205,7 +178,7 @@ export function ChatClient({ chatId }: ChatClientProps) {
                             value={input}
                             onChange={handleInputChange}
                             placeholder="Consulta acerca de las elecciones 2026 🇵🇪"
-                            className='h-full pb-12'
+                            className='h-full pb-12 bg-white'
                         />
                         <Button type="submit" disabled={isLoading} className='rounded-full absolute right-3 bottom-3 size-8'>
                             <Send className='size-3' />

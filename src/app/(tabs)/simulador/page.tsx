@@ -6,40 +6,183 @@ import { MessageCircleWarning, SquarePlus, SquareX, RotateCcw, Info } from 'luci
 import { driver } from 'driver.js';
 import 'driver.js/dist/driver.css';
 
-const presidentialOptions = [
-  {
-    id: 1,
-    party: "FUERZA POPULAR",
-    symbol: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Logo_of_the_Popular_Force_%282024%29.svg/250px-Logo_of_the_Popular_Force_%282024%29.svg.png",
-    candidate: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7u2uyIgXn0Gz5x44AC59KhPFmfG9nrsFG7w&s"
-  },
-  {
-    id: 2,
-    party: "SÍ CREO",
-    symbol: "https://upload.wikimedia.org/wikipedia/commons/1/1b/Logo_Partido_Pol%C3%ADtico_S%C3%ADCreo.png",
-    candidate: "https://www.lampadia.com/wp-content/uploads/2025/11/carlos-espa.jpeg"
-  },
-  {
-    id: 3,
-    party: "AVANZA PAÍS",
-    symbol: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5E7w0gNtb2Tj7WNini1j6ZuWNaT6RBb8rrw&s",
-    candidate: "https://www.peruinforma.com/wp-content/uploads/2025/05/WhatsApp-Image-2025-05-29-at-1.42.54-PM.jpeg"
-  },
-];
+import { API_BASE_URL } from '@/config/api';
+
+interface Candidate {
+  id: number;
+  fullName: string;
+  office: string;
+  biography: string;
+  photoUrl: string;
+  politicalGroupId: number;
+  userId: number;
+}
+
+interface PoliticalGroup {
+  id: number;
+  name: string;
+  shortName: string;
+  logoUrl: string;
+  description: string;
+  candidates: Candidate[];
+}
+
+interface PresidentialOption {
+  id: number;
+  party: string;
+  symbol: string;
+  candidate: string;
+  candidateId: number;
+}
 
 export default function SimuladorPage() {
   const [selectedVote, setSelectedVote] = useState<number | null>(null);
   const [showWarning, setShowWarning] = useState(false);
+  const [presidentialOptions, setPresidentialOptions] = useState<PresidentialOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [voteIntentionId, setVoteIntentionId] = useState<number | null>(null);
+  const electionId = 1;
 
   useEffect(() => {
-    const hasSeenTutorial = localStorage.getItem('votingTutorialShown');
-    if (!hasSeenTutorial) {
-      setTimeout(() => {
-        startTutorial();
-        localStorage.setItem('votingTutorialShown', 'true');
-      }, 500);
-    }
+    fetchPoliticalGroups();
+    loadExistingVote();
   }, []);
+
+  useEffect(() => {
+    if (!loading && presidentialOptions.length > 0) {
+      const hasSeenTutorial = localStorage.getItem('votingTutorialShown');
+      if (!hasSeenTutorial) {
+        setTimeout(() => {
+          startTutorial();
+          localStorage.setItem('votingTutorialShown', 'true');
+        }, 500);
+      }
+    }
+  }, [loading, presidentialOptions]);
+
+  const fetchPoliticalGroups = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const response = await fetch(`${API_BASE_URL}/political-groups`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        const options: PresidentialOption[] = result.data
+          .filter((group: PoliticalGroup) => 
+            group.candidates.some((c: Candidate) => c.office === 'PRESIDENT')
+          )
+          .map((group: PoliticalGroup) => {
+            const president = group.candidates.find((c: Candidate) => c.office === 'PRESIDENT');
+            return {
+              id: group.id,
+              party: group.shortName || group.name,
+              symbol: group.logoUrl || '',
+              candidate: president?.photoUrl || '',
+              candidateId: president?.id || 0
+            };
+          });
+        
+        setPresidentialOptions(options);
+      }
+    } catch (error) {
+      console.error('Error fetching political groups:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadExistingVote = async () => {
+    try {
+      const userStr = localStorage.getItem('user');
+      if (!userStr) return;
+
+      const user = JSON.parse(userStr);
+      const userId = user.id;
+      const accessToken = localStorage.getItem('accessToken');
+
+      const response = await fetch(`${API_BASE_URL}/vote-intentions/user/${userId}/election/${electionId}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+      const result = await response.json();
+
+      if (result.success && result.data && result.data.length > 0) {
+        const voteIntention = result.data[0];
+        setVoteIntentionId(voteIntention.id);
+        setSelectedVote(voteIntention.candidate.politicalGroup.id);
+      }
+    } catch (error) {
+      console.error('Error loading existing vote:', error);
+    }
+  };
+
+  const registerVoteIntention = async (candidateId: number) => {
+    try {
+      const userStr = localStorage.getItem('user');
+      if (!userStr) {
+        alert('Debes iniciar sesión para registrar tu intención de voto');
+        return;
+      }
+
+      const user = JSON.parse(userStr);
+      const userId = user.id;
+      const accessToken = localStorage.getItem('accessToken');
+
+      const body = {
+        userId,
+        candidateId,
+        electionId
+      };
+
+      const response = await fetch(`${API_BASE_URL}/vote-intentions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(body)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setVoteIntentionId(result.data.id);
+      } else {
+        console.error('Error registering vote intention:', result.message);
+      }
+    } catch (error) {
+      console.error('Error registering vote intention:', error);
+    }
+  };
+
+  const deleteVoteIntention = async () => {
+    try {
+      if (!voteIntentionId) return;
+      const accessToken = localStorage.getItem('accessToken');
+
+      const response = await fetch(`${API_BASE_URL}/vote-intentions/${voteIntentionId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setVoteIntentionId(null);
+      } else {
+        console.error('Error deleting vote intention:', result.message);
+      }
+    } catch (error) {
+      console.error('Error deleting vote intention:', error);
+    }
+  };
 
   const startTutorial = () => {
     const driverObj = driver({
@@ -98,28 +241,31 @@ export default function SimuladorPage() {
     driverObj.drive();
   };
 
-  interface PresidentialOption {
-    id: number;
-    party: string;
-    symbol: string;
-    candidate: string;
-  }
-
-  const handleVote = (candidateId: number): void => {
+  const handleVote = (politicalGroupId: number, candidateId: number): void => {
     if (selectedVote === null) {
-      setSelectedVote(candidateId);
-    } else if (selectedVote !== candidateId) {
+      setSelectedVote(politicalGroupId);
+      registerVoteIntention(candidateId);
+    } else if (selectedVote !== politicalGroupId) {
       setShowWarning(true);
       setTimeout(() => setShowWarning(false), 3000);
     }
   };
 
-  const handleReset = () => {
+  const handleReset = async () => {
     if (window.confirm('¿Estás seguro de que deseas reiniciar tu cédula? Perderás tu voto actual.')) {
+      await deleteVoteIntention();
       setSelectedVote(null);
       setShowWarning(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="text-xl font-semibold text-gray-600">Cargando simulador...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 from-blue-50 to-white">
@@ -200,7 +346,7 @@ export default function SimuladorPage() {
 
       {showWarning && (
         <div className="shake fixed top-4 right-4 bg-primary text-white px-6 py-4 rounded-lg shadow-lg z-50 flex items-center gap-3 max-w-md">
-          <MessageCircleWarning className="w-6 h-6 flex-shrink-0" />
+          <MessageCircleWarning className="w-6 h-6" />
           <p className="font-semibold">
             Ya has votado por un candidato. Solo puedes votar por UNO. Reinicia la cédula si deseas cambiar tu voto.
           </p>
@@ -240,7 +386,7 @@ export default function SimuladorPage() {
                 className={`relative p-2 border-x-2 border-b-2 border-gray-400 flex justify-center items-center cursor-pointer transition-all hover:bg-blue-50 ${
                   selectedVote === item.id ? 'bg-blue-50' : ''
                 } ${selectedVote !== null && selectedVote !== item.id ? 'opacity-50' : ''}`}
-                onClick={() => handleVote(item.id)}
+                onClick={() => handleVote(item.id, item.candidateId)}
               >
                 <img 
                   className='object-cover w-full h-48 md:h-64' 
@@ -272,7 +418,7 @@ export default function SimuladorPage() {
                 className={`relative p-2 border-b-2 border-gray-400 flex justify-center items-center cursor-pointer transition-all hover:bg-blue-50 ${
                   selectedVote === item.id ? 'bg-blue-50' : ''
                 } ${selectedVote !== null && selectedVote !== item.id ? 'opacity-50' : ''}`}
-                onClick={() => handleVote(item.id)}
+                onClick={() => handleVote(item.id, item.candidateId)}
               >
                 <img 
                   className='object-contain w-full h-48 md:h-64 p-4' 
