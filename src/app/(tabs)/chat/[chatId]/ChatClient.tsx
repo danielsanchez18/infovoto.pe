@@ -79,33 +79,6 @@ export function ChatClient({ chatId }: ChatClientProps) {
         loadHistory();
     }, [chatId, setMessages]);
 
-    // Enviar mensaje inicial si viene de la URL
-    useEffect(() => {
-        // Solo ejecutar cuando haya terminado de cargar el historial
-        if (isLoadingHistory) return;
-        
-        const searchParams = new URLSearchParams(window.location.search);
-        const initialMessage = searchParams.get('initialMessage');
-        
-        // Solo enviar si hay un mensaje inicial y NO hay mensajes en el chat
-        if (initialMessage && messages.length === 0) {
-            console.log('📨 Enviando mensaje inicial:', initialMessage);
-            
-            // Limpiar el parámetro de la URL ANTES de enviar el mensaje
-            const url = new URL(window.location.href);
-            url.searchParams.delete('initialMessage');
-            window.history.replaceState({}, '', url.toString());
-            
-            // Enviar el mensaje automáticamente con un pequeño delay
-            // para asegurar que el componente esté listo
-            setTimeout(() => {
-                sendMessage({
-                    parts: [{ type: 'text', text: initialMessage }],
-                });
-            }, 100);
-        }
-    }, [isLoadingHistory, messages.length, sendMessage]);
-
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         if (!input.trim()) return;

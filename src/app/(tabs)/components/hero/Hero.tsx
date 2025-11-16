@@ -36,7 +36,7 @@ export default function Hero() {
       const { chatId } = await res.json();
 
       // ⚡ Redirigir al chat recién creado con el mensaje inicial
-      router.push(`/chat/${chatId}?initialMessage=${encodeURIComponent(query)}`);
+      router.push(`/chat/${chatId}`);
     } catch (error) {
       console.error("Error en Hero:", error);
     } finally {
