@@ -200,7 +200,7 @@ export default function SimuladorPage() {
 
       {showWarning && (
         <div className="shake fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 flex items-center gap-3 max-w-md">
-          <MessageCircleWarning className="w-6 h-6 flex-shrink-0" />
+          <MessageCircleWarning className="w-6 h-6" />
           <p className="font-semibold">
             Ya has votado por un candidato. Solo puedes votar por UNO. Reinicia la cédula si deseas cambiar tu voto.
           </p>
