@@ -39,7 +39,7 @@ export default function Hero() {
       </h1>
       <p className="text-lg text-gray-600 mt-1 max-w-3xl relative z-10">
         Realiza tus consultas sobre los candidatos y sus propuestas para tomar
-        una decisión informada en las próximas elecciones.
+        una decisión informada en las próximas elecciones. 🇵🇪
       </p>
       <InputGroup className="mt-10 max-w-4xl w-full relative z-10 bg-white">
         <InputGroupTextarea
