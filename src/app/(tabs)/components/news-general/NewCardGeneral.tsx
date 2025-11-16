@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export const NewCardGeneral = () => {
   return (
-    <Link href="/noticia/dasdasd" className='grid gap-y-3 group'>
+    <Link href="/noticia/86dc874a-1286-4d98-92f3-0f4b5978c185" className='grid gap-y-3 group'>
       <img src="https://imgs.search.brave.com/3Xl0RHexHvOGrDU7tic-GBlgNHlW4QZjteVTwWH9WFM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9mLnJw/cC1ub3RpY2lhcy5p/by8yMDI1LzA5LzI0/LzA4NDgwOF8xNzk1/MzUxLmpwZz9pbWdk/aW1lbnNpb249bG9v/aw" 
         alt="Portada noticia" 
         className="h-40 w-full bg-gray-200"/>
