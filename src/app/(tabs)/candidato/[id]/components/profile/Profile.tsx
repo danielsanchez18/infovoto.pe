@@ -42,8 +42,8 @@ export const Profile = () => {
         </div>
 
         <Tooltip>
-          <TooltipTrigger>
-            <button>
+          <TooltipTrigger asChild>
+            <button type="button" className="cursor-help">
               <Info className="size-5" />
             </button>
           </TooltipTrigger>
