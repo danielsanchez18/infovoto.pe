@@ -7,18 +7,29 @@ import SearchDialog from "../searchDialog/SearchDialog";
 import RegionDialog from "../regionDialog";
 import { useEffect, useState } from "react";
 
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuIndicator,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
+
 export const Navbar = () => {
   const [userName, setUserName] = useState<string | null>(null);
 
   useEffect(() => {
     // Verificar si hay un usuario en localStorage
-    const user = localStorage.getItem('user');
+    const user = localStorage.getItem("user");
     if (user) {
       try {
         const userData = JSON.parse(user);
         setUserName(userData.nombre || userData.name || userData.email);
       } catch (error) {
-        console.error('Error al parsear usuario:', error);
+        console.error("Error al parsear usuario:", error);
       }
     }
   }, []);
@@ -42,6 +53,13 @@ export const Navbar = () => {
         <p>Información</p>
         <p>Guía</p>
       </div>
+          <img
+            src="/img/DecidePE - Logo.png"
+            alt="InfoVoto.pe Logo"
+            className="w-full h-full"
+          />
+        </div>
+      </Link>
 
       {/* Menú de opciones */}
       <div className="flex items-center gap-4">

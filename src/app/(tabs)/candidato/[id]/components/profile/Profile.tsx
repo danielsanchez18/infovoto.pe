@@ -1,5 +1,9 @@
-import { AlertTriangleIcon } from "lucide-react";
-import React from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { AlertTriangleIcon, Info, AlertTriangle } from "lucide-react";
 
 export const Profile = () => {
   return (
@@ -29,25 +33,28 @@ export const Profile = () => {
       </div>
 
       {/* Investigaciones */}
-      <div className="mt-5 pt-5 border-t border-gray-300">
+      <article className="rounded-lg items-center flex gap-x-3 border border-amber-600 bg-amber-100 px-3 py-2">
+        <AlertTriangle className="size-7 min-w-7" />
 
-        <div className="flex gap-x-3">
-          <div className="size-14 bg-amber-500 rounded-full flex items-center justify-center">
-            <AlertTriangleIcon className="size-7 text-white" />
-          </div>
-
-          <div>
-            <h4 className="text-lg font-semibold">1 investigación en curso</h4>
-            <p className="text-sm">Presunta colusión</p>
-          </div>
+        <div className="w-full">
+          <h3 className="font-semibold text-sm">1 investigación en curso</h3>
+          <p className="text-xs font-medium">Presunta colusión</p>
         </div>
 
-        <div>
-          <p className="text-sm text-gray-600 mt-4">Fuente: Jurado Nacional de Elecciones (JNE).</p>
-            <p className="text-sm text-gray-600"> Actualizado al 16 de noviembre de 2025</p>
-        </div>
-
-      </div>
+        <Tooltip>
+          <TooltipTrigger>
+            <button>
+              <Info className="size-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p className="text-center">
+              Fuente: Jurado Nacional de Elecciones (JNE). <br /> Actualizado al
+              16 de noviembre de 2025
+            </p>
+          </TooltipContent>
+        </Tooltip>
+      </article>
     </div>
   );
 };
