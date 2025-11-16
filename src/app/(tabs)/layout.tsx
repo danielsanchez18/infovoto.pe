@@ -13,9 +13,6 @@ export default function ShopLayout({
         {children}
         <Footer />
       </div>
-      <div className="w-full px-5 mt-10">
-        <Footer />
-      </div>
     </main>
   );
 }
