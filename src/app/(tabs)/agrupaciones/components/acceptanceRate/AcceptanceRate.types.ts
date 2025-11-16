@@ -1,4 +1,4 @@
 export type AcceptanceRateProps = {
-    rate: number;
-    total: number;
+    voteCount: number;
+    totalVotes: number;
 };
