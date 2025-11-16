@@ -11,9 +11,9 @@ export const Navbar = () => {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-x-3">
         <div className="size-7">
-          <img src="/favicon.ico" alt="InfoVoto.pe Logo" />
+          <img src="/favicon.ico" alt="Decide.Pe Logo" />
         </div>
-        <p className="font-bold text-lg">InfoVoto.pe</p>
+        <p className="font-bold text-lg">Decide.Pe</p>
       </Link>
 
       {/* Menú de opciones */}
