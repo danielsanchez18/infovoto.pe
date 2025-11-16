@@ -35,24 +35,35 @@ export const Navbar = () => {
   }, []);
 
   return (
-    <nav className="flex items-center gap-x-3 justify-between py-4">
+    <nav className="flex items-center gap-x-3 justify-between py-4 text-sm font-semibold">
+
       {/* Logo */}
-      <Link href="/" className="flex items-center gap-x-3">
-        <div className="h-7 flex items-center justify-center">
-<<<<<<< HEAD
+      <div className="flex items-center gap-4">
+        <Link href="/" className="flex items-center mb-2">
+          <div className="h-7 flex items-center justify-center">
+            <img src="/img/logo.png" alt="InfoVoto.pe Logo" className="w-full h-full" />
+          </div>
+        </Link>
+        <Link href="/" >
+          <p>Inicio</p>
+        </Link>
+        <Link href="/agrupaciones">
+          <p>Agrupaciones</p>
+        </Link>
+        <p>Información</p>
+        <p>Guía</p>
+      </div>
           <img
             src="/img/DecidePE - Logo.png"
             alt="InfoVoto.pe Logo"
             className="w-full h-full"
           />
-=======
-          <img src="/img/logo.png" alt="InfoVoto.pe Logo" className="w-full h-full" />
->>>>>>> 085a7fb599a0b770cb7302648697d2523799760e
         </div>
       </Link>
 
       {/* Menú de opciones */}
-      <div className="flex items-center gap-x-5">
+      <div className="flex items-center gap-4">
+        <SearchDialog />
         {userName ? (
           <Link href="/mi-perfil" className="flex items-center gap-x-2">
             <Button className="py-2">
