@@ -9,7 +9,6 @@ import {
   MessageCirclePlusIcon,
   XCircle,
   Send,
-  Info,
 } from "lucide-react";
 
 import {
@@ -33,8 +32,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface Post {
   id: number;
@@ -104,7 +102,6 @@ export const PostCard = ({ post, candidateData }: PostCardProps) => {
       console.error("No se pudo copiar:", err);
     }
   };
-
   return (
     <div className="rounded-lg border border-gray-200 w-full px-4 py-4 grid gap-y-5">
       {/* Perfil */}
@@ -122,7 +119,7 @@ export const PostCard = ({ post, candidateData }: PostCardProps) => {
         </div>
         <div className="ml-auto">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger>
               <button type="button" className="p-2 rounded-full hover:bg-gray-100">
                 <EllipsisVerticalIcon className="size-4" />
               </button>
@@ -134,7 +131,7 @@ export const PostCard = ({ post, candidateData }: PostCardProps) => {
                   Reportar publicación
                 </button>
               </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setIsContextDialogOpen(true)}>
+              <DropdownMenuItem>
                 <button className="px-2.5 py-1 flex items-center gap-x-2 hover:bg-gray-100">
                   <MessageCirclePlusIcon className="size-4" />
                   Añadir contexto
@@ -160,23 +157,6 @@ export const PostCard = ({ post, candidateData }: PostCardProps) => {
       <p className="text-sm whitespace-pre-line">
         {post.content}
       </p>
-
-      {/* Contexto de la comunidad */}
-      {!isLoadingContext && context && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-start gap-x-2">
-            <Info className="size-5 text-blue-600 mt-0.5 shrink-0" />
-            <div className="flex-1">
-              <h4 className="text-sm font-semibold text-blue-900 mb-1">
-                Contexto de la comunidad
-              </h4>
-              <p className="text-sm text-blue-800 leading-relaxed">
-                {context}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Botones de interacción */}
       <div className="border-t pt-2 border-gray-300 grid grid-cols-3 gap-x-2">

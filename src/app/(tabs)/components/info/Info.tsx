@@ -21,11 +21,11 @@ export const Info = () => {
             <div className="text-center">
               <h5 className="font-semibold">Información para Electores</h5>
               <p className="text-sm text-gray-600 mb-5">Descubre dónde votar y cómo prepararte para las elecciones.</p>
-              <Link href="/">
-                <Button className="w-full">
-                    Consulta tu Local de Votación
+                <Link href={typeof window !== 'undefined' && localStorage.getItem('user') ? '/mi-perfil' : '/login'}>
+                <Button className="w-full" >
+                  Consulta tu Local de Votación
                 </Button>
-              </Link>
+                </Link>
             </div>
           </div>
 
