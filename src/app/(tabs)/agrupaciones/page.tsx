@@ -18,9 +18,9 @@ export default function AgrupacionesPage() {
         <h3 className="text-xl font-semibold">
           Compara Perfiles y Propuestas
         </h3>
-        <Link href="/presidentes">
+        {/* <Link href="/presidentes">
           <Button>Ver todos</Button>
-        </Link>
+        </Link> */}
       </div>
 
       {/* Contenido */}
