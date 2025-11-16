@@ -53,10 +53,9 @@ export default function Hero() {
 
   return (
     <div className="flex flex-col items-center text-center mt-20 relative">
-      {/* Círculos difuminados */}
-      <div className="absolute -top-6 right-80 size-40 bg-primary/35 rounded-full blur-3xl pointer-events-none opacity-90 -z-40" />
-      <div className="absolute -bottom-25 left-44 size-29 bg-primary/40 rounded-full blur-3xl pointer-events-none opacity-90 -z-40" />
-      <div className="absolute -top-25 left-60 size-40 bg-primary/40 rounded-full blur-3xl pointer-events-none opacity-90 -z-40" />
+        <div className="absolute -top-6 right-80 size-40 bg-primary/40 rounded-full blur-3xl pointer-events-none opacity-90 -z-40 animate-pulse" />
+        <div className="absolute -bottom-25 left-44 size-29 bg-primary/45 rounded-full blur-3xl pointer-events-none opacity-90 -z-40 animate-pulse" style={{ animationDelay: '0.5s' }} />
+        <div className="absolute -top-25 left-60 size-40 bg-primary/45 rounded-full blur-3xl pointer-events-none opacity-90 -z-40 animate-pulse" style={{ animationDelay: '1s' }} />
 
       <h1 className="text-3xl font-bold relative z-10">
         ¿Conoces a los candidatos para las elecciones de 2026?
@@ -70,7 +69,7 @@ export default function Hero() {
       {/* Input del query */}
       <InputGroup className="mt-10 max-w-4xl w-full relative z-10 bg-white">
         <InputGroupTextarea
-          placeholder="Pregunta, busca o consulta..."
+          placeholder="Coloca aquí tu consulta: (por ejemplo: ¿Qué candidato está a favor de derogar las leyes pro-crimen?"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}

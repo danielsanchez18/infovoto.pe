@@ -113,7 +113,7 @@ export function ChatClient({ chatId }: ChatClientProps) {
                 <p><strong className='text-lg text-black'>Cicerón,</strong> por un voto consciente</p>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 px-0 space-y-3">
+            <div className="flex-1 overflow-y-auto p-4 px-0 space-y-3 z-2 min-h-screen h-full pb-20">
                 {isLoadingHistory && (
                     <p className="text-xs text-muted-foreground text-center">
                         Cargando historial del chat...
@@ -168,7 +168,7 @@ export function ChatClient({ chatId }: ChatClientProps) {
                 )}
             </div>
 
-            <div className='fixed w-full bottom-10 max-w-[1255px]'>
+            <div className='fixed w-full bottom-10 max-w-[1255px] z-3'>
                 <form
                     onSubmit={handleSubmit}
                     className="p-3 px-0 flex gap-2"
@@ -178,7 +178,7 @@ export function ChatClient({ chatId }: ChatClientProps) {
                             value={input}
                             onChange={handleInputChange}
                             placeholder="Consulta acerca de las elecciones 2026 🇵🇪"
-                            className='h-full pb-12'
+                            className='h-full pb-12 bg-white'
                         />
                         <Button type="submit" disabled={isLoading} className='rounded-full absolute right-3 bottom-3 size-8'>
                             <Send className='size-3' />

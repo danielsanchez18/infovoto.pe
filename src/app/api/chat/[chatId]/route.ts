@@ -40,40 +40,49 @@ export async function POST(
 
     console.log('🔍 Pregunta del usuario:', userQuestion);
 
-  // 2) Buscar documentos relevantes en Supabase (RAG simple)
-  // Usamos text search para no complicarnos con embeddings en la hackathon
-  const { data: docs } = await supabase
-    .from('documents')
-    .select('title, content')
-    .textSearch('content', userQuestion, {
-      type: 'websearch'
-    })
-    .limit(5);
+    // 2) Buscar documentos relevantes en Supabase (RAG simple)
+    // Usamos text search para no complicarnos con embeddings en la hackathon
+    const { data: docs } = await supabase
+      .from('documents')
+      .select('title, content')
+      .textSearch('content', userQuestion, {
+        type: 'websearch'
+      })
+      .limit(5);
 
-  const contextText =
-    docs?.map((d) => `# ${d.title}\n${d.content}`).join('\n\n') ?? '';
+    const contextText =
+      docs?.map((d) => `# ${d.title}\n${d.content}`).join('\n\n') ?? '';
 
-  // 3) System prompt con restricciones (neutral, Perú 2026)
-  const systemPrompt = `
-Eres un asistente especializado en información electoral de PERÚ para las elecciones generales de 2026.
+    // 3) System prompt con restricciones (neutral, Perú 2026)
+    const systemPrompt = `
+Eres un asistente especializado exclusivamente en información electoral del Perú para las Elecciones Generales 2026.
 
-REGLAS IMPORTANTES:
-- Solo respondes preguntas relacionadas con:
-  - Elecciones generales Perú 2026 (presidenciales, congresales, etc.).
-  - Candidatos, partidos, propuestas, planes de gobierno.
-  - Información institucional (ONPE, JNE, RENIEC) relacionada al proceso electoral.
-- Si la pregunta NO tiene relación con elecciones peruanas 2026, responde claramente:
-  "Solo puedo responder preguntas relacionadas con las elecciones peruanas de 2026."
-- Mantén un tono NEUTRAL y basado en hechos.
-  - No recomiendes por quién votar.
-  - No intentes persuadir al usuario ni a grupos específicos.
-  - Si no tienes información fiable, dilo y explícitalo.
-- Usa el contexto provisto a continuación como fuente principal.
-  - Si algo no está en el contexto, declara la incertidumbre.
-- NO MENTIR bajo ninguna circunstancia.
-- Maneja respuestas de entre 50 y 200 palabras máximo.
+REGLAS:
+1. Solo puedes responder preguntas relacionadas con:
+   - Elecciones Generales Perú 2026 (presidenciales, congresales, Parlamento Andino).
+   - Candidatos, partidos, alianzas, propuestas y planes de gobierno.
+   - Información oficial sobre ONPE, JNE, RENIEC y el proceso electoral 2026.
+   - Consultas temáticas siempre que estén vinculadas a propuestas o posiciones de los candidatos (ej.: educación, SUNEDU, salud, economía, seguridad, etc.).
 
-CONTEXTO (resúmenes de propuestas y candidatos, puede estar incompleto):
+2. Si la pregunta NO tiene relación con las elecciones peruanas 2026, debes responder estrictamente:
+   "Solo puedo responder preguntas relacionadas con las elecciones peruanas de 2026."
+
+3. Mantén un tono absolutamente neutral y basado en hechos.
+   - No recomiendes por quién votar.
+   - No persuadas al usuario ni a grupos específicos.
+   - No inventes información: si no existe en el contexto, responde que no tienes datos suficientes.
+
+4. Usa únicamente el CONTEXTO proporcionado por el usuario para emitir opiniones, comparaciones o afirmaciones.
+   - Si el contexto está incompleto, declara explícitamente la falta de información.
+   - No asumas ni rellenes datos ausentes.
+
+5. No generes contenido especulativo, predicciones electorales ni afirmaciones sin respaldo.
+   - Sí puedes explicar tendencias históricas o patrones generales, si son relevantes y neutrales.
+
+6. Extensión de respuestas: entre 50 y 200 palabras.
+
+CONTEXTO:
+{AQUÍ SE INSERTA EL CONTEXTO DINÁMICO CON RESÚMENES DE CANDIDATOS, PROPUESTAS Y PARTIDOS}
 ${contextText.slice(0, 8000)}
   `.trim();
 
@@ -101,7 +110,7 @@ ${contextText.slice(0, 8000)}
           .filter((part): part is { type: 'text'; text: string } => part.type === 'text')
           .map(part => part.text)
           .join('');
-        
+
         return {
           chat_id: chatId,
           role: m.role,
@@ -120,12 +129,12 @@ ${contextText.slice(0, 8000)}
 
     // 5) Usar el hook onFinish para guardar la respuesta completa
     let fullResponse = '';
-    
+
     // Capturar y guardar la respuesta del asistente cuando termine
     const assistantMessagePromise = (async () => {
       const fullText = await result.text;
       fullResponse = fullText;
-      
+
       console.log('💾 Guardando respuesta del asistente...');
       const { error: assistantError } = await supabase
         .from('messages')
@@ -143,7 +152,7 @@ ${contextText.slice(0, 8000)}
     })();
 
     // No esperamos la promesa para no bloquear el streaming
-    assistantMessagePromise.catch(err => 
+    assistantMessagePromise.catch(err =>
       console.error('❌ Error en guardado asíncrono:', err)
     );
 
@@ -151,15 +160,15 @@ ${contextText.slice(0, 8000)}
     return result.toTextStreamResponse();
   } catch (error) {
     console.error('❌ Error en chat API:', error);
-    
+
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         error: 'Error procesando el chat',
         details: error instanceof Error ? error.message : 'Error desconocido'
       }),
-      { 
-        status: 500, 
-        headers: { 'Content-Type': 'application/json' } 
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
       }
     );
   }
