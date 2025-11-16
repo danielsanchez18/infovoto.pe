@@ -4,10 +4,12 @@ import { Info } from "./components/info/Info";
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { NewsGeneralGrid } from "./components/news-general/NewsGeneralGrid";
+import Hero from "./components/hero";
 
 export default function Home() {
   return (
     <div className="py-10 grid gap-32">
+      <Hero />
       <NewsGeneralGrid />
       <div className="grid gap-5">
         <Countdown />
