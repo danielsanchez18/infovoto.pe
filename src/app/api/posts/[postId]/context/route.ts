@@ -6,9 +6,9 @@ import { streamText } from 'ai';
 
 export async function GET(
   _req: Request,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const { postId } = await params;
   const supabase = supabaseServer();
 
   const { data, error } = await supabase
@@ -30,9 +30,9 @@ export async function GET(
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const { postId } = await params;
   const { message } = await req.json();
 
   if (!message || typeof message !== 'string') {

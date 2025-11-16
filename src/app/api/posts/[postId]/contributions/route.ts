@@ -6,9 +6,9 @@ import { streamText } from 'ai';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
-  const { postId } = params;
+  const { postId } = await params;
   const { message, content, authorName } = await req.json();
 
   if (!message || typeof message !== 'string') {
