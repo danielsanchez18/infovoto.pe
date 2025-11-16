@@ -29,25 +29,25 @@ export const Navbar = () => {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-x-3">
         <div className="h-7 flex items-center justify-center">
-          <img src="/img/DecidePE - Logo.png" alt="InfoVoto.pe Logo" className="w-full h-full" />
+          <img src="/img/logo.png" alt="InfoVoto.pe Logo" className="w-full h-full" />
         </div>
       </Link>
 
       {/* Menú de opciones */}
       <div className="flex items-center gap-x-5">
         {userName ? (
-          <div className="flex items-center gap-x-2">
-            <span className="font-medium text-gray-700">
-              Hola, <Link href={'/mi-perfil'} className="hover:underline cursor-pointer">{userName}</Link>
-            </span>
-            <User className="h-5 w-5 text-gray-600" />
-          </div>
+          <Link href="/mi-perfil" className="flex items-center gap-x-2">
+            <Button className="py-2">
+              <span className="flex flex-row gap-2 items-center">
+                Perfil
+              </span>
+            </Button>
+          </Link>
         ) : (
           <Link href="/login" className="flex items-center gap-x-2">
             <Button className="py-2">
               <span className="flex flex-row gap-2 items-center">
                 Iniciar Sesión
-                <User className="h-5 w-5" />
               </span>
             </Button>
           </Link>
