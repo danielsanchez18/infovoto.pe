@@ -1,8 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { SelectProfile } from './components/select-profile/SelectProfile';
 import { GovernmentPlan } from './components/government-plan/GovernmentPlan';
 
 export default function ComparadorPage() {
+  const [candidate1, setCandidate1] = useState<string>("");
+  const [candidate2, setCandidate2] = useState<string>("");
+
   return (
     <div className="flex flex-col gap-10 py-10">
       {/* Titulo */}
@@ -33,8 +39,16 @@ export default function ComparadorPage() {
         
         {/* Seleccionar Perfiles a Comparar */}
         <div className="grid grid-cols-2 gap-x-10">
-          <SelectProfile />
-          <SelectProfile />
+          <SelectProfile
+            selectedCandidate={candidate1}
+            onSelectCandidate={setCandidate1}
+            excludedCandidateIds={candidate2 ? [candidate2] : []}
+          />
+          <SelectProfile
+            selectedCandidate={candidate2}
+            onSelectCandidate={setCandidate2}
+            excludedCandidateIds={candidate1 ? [candidate1] : []}
+          />
         </div>
 
         {/* Resultados de la Comparación */}
