@@ -183,7 +183,7 @@ export default function SimuladorPage() {
         </button>
         <button
           onClick={handleReset}
-          className="tutorial-reset flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+          className="tutorial-reset flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/80 transition-colors"
           title="Reiniciar cédula"
         >
           <RotateCcw className="w-5 h-5" />
@@ -199,8 +199,8 @@ export default function SimuladorPage() {
       </p>
 
       {showWarning && (
-        <div className="shake fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 flex items-center gap-3 max-w-md">
-          <MessageCircleWarning className="w-6 h-6" />
+        <div className="shake fixed top-4 right-4 bg-primary text-white px-6 py-4 rounded-lg shadow-lg z-50 flex items-center gap-3 max-w-md">
+          <MessageCircleWarning className="w-6 h-6 flex-shrink-0" />
           <p className="font-semibold">
             Ya has votado por un candidato. Solo puedes votar por UNO. Reinicia la cédula si deseas cambiar tu voto.
           </p>

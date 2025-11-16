@@ -2,7 +2,7 @@ import Link from "next/link"
 
 export const NewCardGeneralPrincipal = () => {
   return (
-    <Link href="">
+    <Link href="/noticias/86dc874a-1286-4d98-92f3-0f4b5978c185">
       <div className="h-96 w-full relative overflow-hidden group">
         <img src="https://elcomercio.pe/resizer/v2/DBG3H6XICZEG7AU7KUU4ZJERTQ.jpg?auth=7b51a916fdc8d99547ced0df81872f4fc7e051ae6519a5cbb79b2a17fe86a5d4&width=1200&height=675&quality=75&smart=true" alt="" 
           className="object-cover w-full h-full absolute top-0 left-0"/>

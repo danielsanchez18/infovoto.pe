@@ -1,4 +1,4 @@
-export default function Candidate() {
+export default function CandidateCard() {
   return (
     <div className="w-56 pt-10">
       <img
