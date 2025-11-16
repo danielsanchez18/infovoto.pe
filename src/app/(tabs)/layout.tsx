@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar/Navbar";
+import { Footer } from "./components/footer/Footer";
 
 export default function ShopLayout({
   children,
@@ -10,6 +11,7 @@ export default function ShopLayout({
       <div className="w-full max-w-[80rem] mx-auto px-5">
         <Navbar />
         {children}
+        <Footer />
       </div>
     </main>
   );
