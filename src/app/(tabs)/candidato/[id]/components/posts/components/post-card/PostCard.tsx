@@ -36,72 +36,49 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import React, { useState, useEffect } from "react";
 
-interface PostCardProps {
-  postId: string;
+interface Post {
+  id: number;
+  title: string;
   content: string;
-  authorName?: string;
+  status: string;
+  authorId: number;
+  candidateId: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export const PostCard = ({ postId, content, authorName }: PostCardProps) => {
+interface CandidateInfo {
+  fullName: string;
+  photoUrl: string;
+}
+
+interface PostCardProps {
+  post: Post;
+  candidateData: CandidateInfo;
+}
+
+const getTimeAgo = (dateString: string): string => {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diffInMs = now.getTime() - date.getTime();
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+  const diffInDays = Math.floor(diffInHours / 24);
+
+  if (diffInHours < 1) {
+    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
+    return `Hace ${diffInMinutes} minuto${diffInMinutes !== 1 ? 's' : ''}`;
+  } else if (diffInHours < 24) {
+    return `Hace ${diffInHours} hora${diffInHours !== 1 ? 's' : ''}`;
+  } else if (diffInDays < 7) {
+    return `Hace ${diffInDays} día${diffInDays !== 1 ? 's' : ''}`;
+  } else {
+    return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+};
+
+export const PostCard = ({ post, candidateData }: PostCardProps) => {
   const [copied, setCopied] = useState(false);
-  const [context, setContext] = useState<string | null>(null);
-  const [isContextDialogOpen, setIsContextDialogOpen] = useState(false);
-  const [contribution, setContribution] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoadingContext, setIsLoadingContext] = useState(true);
-
-  // Fetch del contexto al montar
-  useEffect(() => {
-    const fetchContext = async () => {
-      try {
-        setIsLoadingContext(true);
-        const response = await fetch(`/api/posts/${postId}/context`);
-        const data = await response.json();
-        setContext(data.result || null);
-      } catch (error) {
-        console.error("Error al cargar contexto:", error);
-      } finally {
-        setIsLoadingContext(false);
-      }
-    };
-
-    fetchContext();
-  }, [postId]);
-
-  // Función para añadir contribución
-  const handleAddContribution = async () => {
-    if (!contribution.trim()) return;
-
-    try {
-      setIsSubmitting(true);
-      const response = await fetch(`/api/posts/${postId}/contributions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          message: contribution,
-          content: content,
-          authorName: authorName || "Candidato"
-        }),
-      });
-
-      const data = await response.json();
-      
-      if (response.ok && data.success) {
-        // Actualizar el contexto con el resultado
-        setContext(data.context);
-        setContribution("");
-        setIsContextDialogOpen(false);
-      } else {
-        alert(`Error: ${data.error || 'No se pudo guardar la contribución'}`);
-        console.error("Error al añadir contribución:", data.error);
-      }
-    } catch (error) {
-      alert('Error de red al añadir contribución');
-      console.error("Error al añadir contribución:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  const postUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/post/${post.id}`;
 
   const copyLink = async () => {
     try {
@@ -127,20 +104,21 @@ export const PostCard = ({ postId, content, authorName }: PostCardProps) => {
       console.error("No se pudo copiar:", err);
     }
   };
+
   return (
     <div className="rounded-lg border border-gray-200 w-full px-4 py-4 grid gap-y-5">
       {/* Perfil */}
       <div className="flex items-center gap-x-2">
         <div className="size-10 flex items-center justify-center overflow-hidden rounded-full">
           <img
-            src="/img/lopez-aliaga-profile.png"
-            alt="Foto de perfil de Rafael López Aliaga"
+            src={candidateData.photoUrl}
+            alt={`Foto de perfil de ${candidateData.fullName}`}
             className="h-full w-full object-cover"
           />
         </div>
         <div className="">
-          <p className="text-sm font-semibold">Rafael Lopez Aliaga</p>
-          <p className="text-xs text-gray-600">Hace 2 horas</p>
+          <p className="text-sm font-semibold">{candidateData.fullName}</p>
+          <p className="text-xs text-gray-600">{getTimeAgo(post.createdAt)}</p>
         </div>
         <div className="ml-auto">
           <DropdownMenu>
@@ -173,19 +151,15 @@ export const PostCard = ({ postId, content, authorName }: PostCardProps) => {
         </div>
       </div>
 
-      {/* Parrafo */}
-      <p className="text-sm">
-        {content}
-      </p>
+      {/* Título */}
+      {post.title && (
+        <h3 className="text-base font-semibold">{post.title}</h3>
+      )}
 
-      {/* Imagen */}
-      <div className="h-96 bg-gray-300 rounded-md contain-content">
-        <img
-          src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/attachments/gen-images/public/education-conference-evD8W9FYkFP96Ajjb2dKzEs00YopsH.jpg"
-          alt=""
-          className="h-full w-full object-cover"
-        />
-      </div>
+      {/* Contenido */}
+      <p className="text-sm whitespace-pre-line">
+        {post.content}
+      </p>
 
       {/* Contexto de la comunidad */}
       {!isLoadingContext && context && (
@@ -209,13 +183,13 @@ export const PostCard = ({ postId, content, authorName }: PostCardProps) => {
         {/* Like Button */}
         <button className="py-3 w-full text-gray-600 flex items-center text-sm font-medium justify-center gap-x-2 hover:bg-gray-100 rounded-md hover:text-primary">
           <Heart className="size-4.5" />
-          <span className="text-sm ">21,232 me gusta</span>
+          <span className="text-sm ">Me gusta</span>
         </button>
 
         {/* Comment Button */}
         <button className="py-3 w-full text-gray-600 flex items-center text-sm font-medium justify-center gap-x-2 hover:bg-gray-100 rounded-md hover:text-primary">
           <MessageCircle className="size-4.5" />
-          <span className="text-sm ">213 comentarios</span>
+          <span className="text-sm ">Comentar</span>
         </button>
 
         {/* Share Button */}
@@ -240,7 +214,7 @@ export const PostCard = ({ postId, content, authorName }: PostCardProps) => {
                 </Label>
                 <Input
                   id="link"
-                  defaultValue="https://decide-pe.vercel.app/candidato/86dc874a-1286-4d98-92f3-0f4b5978c185"
+                  defaultValue={postUrl}
                   readOnly
                 />
               </div>
@@ -263,54 +237,15 @@ export const PostCard = ({ postId, content, authorName }: PostCardProps) => {
       {/* <InputComment /> */}
 
       {/* Caja de comentarios */}
-      <div className="grid gap-y-5">
+      {/* <div className="grid gap-y-5">
         <div>
           <BoxComments />
         </div>
 
-        {/* Si hay mas de tres comentarios, mostrar boton ver mas comentarios */}
         <button className="text-sm font-semibold hover:underline text-primary">
           Ver más comentarios
         </button>
-      </div>
-
-      {/* Dialog para añadir contexto */}
-      <Dialog open={isContextDialogOpen} onOpenChange={setIsContextDialogOpen}>
-        <DialogContent className="sm:max-w-[525px]">
-          <DialogHeader>
-            <DialogTitle>Añadir contexto a la publicación</DialogTitle>
-            <DialogDescription>
-              Comparte información adicional, verificable y neutral que ayude a otros usuarios a entender mejor esta publicación. Tu contribución será analizada junto con otras para generar un contexto de la comunidad.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <Textarea
-              placeholder="Escribe tu aporte aquí... (ej: fechas importantes, datos verificables, contexto histórico, etc.)"
-              value={contribution}
-              onChange={(e) => setContribution(e.target.value)}
-              className="min-h-[120px]"
-              disabled={isSubmitting}
-            />
-          </div>
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsContextDialogOpen(false)}
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="button"
-              onClick={handleAddContribution}
-              disabled={!contribution.trim() || isSubmitting}
-            >
-              {isSubmitting ? "Enviando..." : "Enviar aporte"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      </div> */}
     </div>
   );
 };

@@ -1,8 +1,80 @@
+'use client';
+
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { API_BASE_URL } from "@/config/api";
+
+interface VoteIntention {
+  id: number;
+  userId: number;
+  candidateId: number;
+  electionId: number;
+  createdAt: string;
+}
+
+interface Candidate {
+  id: number;
+  fullName: string;
+  office: string;
+  photoUrl: string;
+  politicalGroupId: number;
+  voteIntentions: VoteIntention[];
+}
+
+interface PoliticalGroup {
+  id: number;
+  name: string;
+  shortName: string;
+  logoUrl: string;
+  description: string;
+  candidates: Candidate[];
+}
 
 export const Groups = () => {
+  const [politicalGroups, setPoliticalGroups] = useState<PoliticalGroup[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPoliticalGroups();
+  }, []);
+
+  const fetchPoliticalGroups = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/political-groups`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        setPoliticalGroups(result.data);
+      }
+    } catch (error) {
+      console.error('Error al cargar agrupaciones políticas:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getTotalVoteIntentions = (group: PoliticalGroup): number => {
+    let total = 0;
+    group.candidates.forEach((candidate) => {
+      total += candidate.voteIntentions?.length || 0;
+    });
+    return total;
+  };
+
+  const getPresidentialCandidate = (group: PoliticalGroup): Candidate | null => {
+    return group.candidates.find((c) => c.office === 'PRESIDENT') || null;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <section className="grid gap-10">
@@ -24,186 +96,43 @@ export const Groups = () => {
 
         {/* Grid de Agrupaciones */}
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 items-center gap-10 h-auto">
-          {/* Agrupacion Politica 1 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://imgs.search.brave.com/yddWmbMMPPSwRazA7tw-qNIbYFH7lpQTfihtUXp18hI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy9j/L2NiL0xvZ29fZGVf/ZnVlcnphX3BvcHVs/YXJfMjAyNF9wbmcu/cG5n"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqb_XcyhL1p_MJRzCHuW9qWMWiWOdWlzwZkpM_elUHGWpTCUUb-AbIP3pPS45KWQ3Tkvw&usqp=CAU"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Fuerza Popular</h5>
-              <p className="text-sm text-gray-600">1232 votaciones</p>
-            </div>
-          </Link>
+          {politicalGroups.map((group) => {
+            const presidentialCandidate = getPresidentialCandidate(group);
+            const totalVotes = getTotalVoteIntentions(group);
 
-          {/* Agrupacion Politica 2 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/3/33/Logo_Renovaci%C3%B3n_Popular_2023.png"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://elmontonero.pe/upload/uploads_autores/rafael_lopez_aliaga2.png"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Renovación Popular</h5>
-              <p className="text-sm text-gray-600">1132 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 3 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://pbs.twimg.com/profile_images/1869113760721317888/s943kuwS_400x400.jpg"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://www.planetadelibros.com.pe/usuaris/autores/fotos/900005/original/900004432_1_HDS-CMS_202110141620.png"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Avanza País</h5>
-              <p className="text-sm text-gray-600">1132 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 1 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://imgs.search.brave.com/yddWmbMMPPSwRazA7tw-qNIbYFH7lpQTfihtUXp18hI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy9j/L2NiL0xvZ29fZGVf/ZnVlcnphX3BvcHVs/YXJfMjAyNF9wbmcu/cG5n"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqb_XcyhL1p_MJRzCHuW9qWMWiWOdWlzwZkpM_elUHGWpTCUUb-AbIP3pPS45KWQ3Tkvw&usqp=CAU"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Fuerza Popular</h5>
-              <p className="text-sm text-gray-600">1232 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 2 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/3/33/Logo_Renovaci%C3%B3n_Popular_2023.png"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://elmontonero.pe/upload/uploads_autores/rafael_lopez_aliaga2.png"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Renovación Popular</h5>
-              <p className="text-sm text-gray-600">1132 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 3 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://pbs.twimg.com/profile_images/1869113760721317888/s943kuwS_400x400.jpg"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://www.planetadelibros.com.pe/usuaris/autores/fotos/900005/original/900004432_1_HDS-CMS_202110141620.png"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Avanza País</h5>
-              <p className="text-sm text-gray-600">1132 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 1 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://imgs.search.brave.com/yddWmbMMPPSwRazA7tw-qNIbYFH7lpQTfihtUXp18hI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy9j/L2NiL0xvZ29fZGVf/ZnVlcnphX3BvcHVs/YXJfMjAyNF9wbmcu/cG5n"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqb_XcyhL1p_MJRzCHuW9qWMWiWOdWlzwZkpM_elUHGWpTCUUb-AbIP3pPS45KWQ3Tkvw&usqp=CAU"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Fuerza Popular</h5>
-              <p className="text-sm text-gray-600">1232 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 2 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/3/33/Logo_Renovaci%C3%B3n_Popular_2023.png"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://elmontonero.pe/upload/uploads_autores/rafael_lopez_aliaga2.png"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Renovación Popular</h5>
-              <p className="text-sm text-gray-600">1132 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 3 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://pbs.twimg.com/profile_images/1869113760721317888/s943kuwS_400x400.jpg"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://www.planetadelibros.com.pe/usuaris/autores/fotos/900005/original/900004432_1_HDS-CMS_202110141620.png"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Avanza País</h5>
-              <p className="text-sm text-gray-600">1132 votaciones</p>
-            </div>
-          </Link>
-
-          {/* Agrupacion Politica 1 */}
-          <Link href="/" className="gap-y-5 flex flex-col items-center group">
-            <div className="w-28 h-28 flex items-center justify-center contain-content relative">
-              <img
-                src="https://imgs.search.brave.com/yddWmbMMPPSwRazA7tw-qNIbYFH7lpQTfihtUXp18hI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy9j/L2NiL0xvZ29fZGVf/ZnVlcnphX3BvcHVs/YXJfMjAyNF9wbmcu/cG5n"
-                alt="" className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
-              />
-              <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqb_XcyhL1p_MJRzCHuW9qWMWiWOdWlzwZkpM_elUHGWpTCUUb-AbIP3pPS45KWQ3Tkvw&usqp=CAU"
-                alt="" className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
-              />
-            </div>
-            <div className="text-center">
-              <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">Fuerza Popular</h5>
-              <p className="text-sm text-gray-600">1232 votaciones</p>
-            </div>
-          </Link>
-
+            return (
+              <Link 
+                key={group.id} 
+                href={`/agrupaciones/${group.id}`} 
+                className="gap-y-5 flex flex-col items-center group"
+              >
+                <div className="w-28 h-28 flex items-center justify-center contain-content relative">
+                  {/* Logo del partido */}
+                  <img
+                    src={group.logoUrl}
+                    alt={`Logo de ${group.name}`}
+                    className="absolute top-0 start-0 w-full group-hover:opacity-0 transition duration-500 z-10 hover:z-0"
+                  />
+                  {/* Foto del candidato presidencial */}
+                  {presidentialCandidate && (
+                    <img
+                      src={presidentialCandidate.photoUrl}
+                      alt={`Foto de ${presidentialCandidate.fullName}`}
+                      className="absolute top-0 start-0 h-full opacity-0 group-hover:opacity-100 transition duration-500 z-0 hover:z-10 object-cover w-full"
+                    />
+                  )}
+                </div>
+                <div className="text-center">
+                  <h5 className="font-semibold text-center line-clamp-2 text-lg leading-none">
+                    {group.shortName || group.name}
+                  </h5>
+                  <p className="text-sm text-gray-600">
+                    {totalVotes} {totalVotes === 1 ? 'votación' : 'votaciones'}
+                  </p>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
     </div>
