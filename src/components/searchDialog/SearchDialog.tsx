@@ -111,7 +111,7 @@ export default function SearchDialog() {
                                             {results.map((result) => (
                                                 <button
                                                     key={result.id}
-                                                    className="w-full text-left rounded-lg hover:bg-gray-50 transition-colors group flex items-center gap-2 px-3"
+                                                    className="w-full text-left rounded-lg hover:bg-gray-50 transition-colors group flex items-center gap-2 px-3 py-0.5"
                                                     onClick={() => {
                                                         console.log('Selected:', result);
                                                         handleClose();
