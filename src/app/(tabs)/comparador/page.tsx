@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { SelectProfile } from './components/SelectProfile';
+import { SelectProfile } from './components/select-profile/SelectProfile';
+import { GovernmentPlan } from './components/government-plan/GovernmentPlan';
 
 export default function ComparadorPage() {
   return (
@@ -28,12 +29,19 @@ export default function ComparadorPage() {
       </div>
 
       {/* Contenido */}
-      <div className="grid grid-cols-2">
-        <div className="border-r border-gray-300">
-            <SelectProfile />
+      <section className="grid gap-y-20">
+        
+        {/* Seleccionar Perfiles a Comparar */}
+        <div className="grid grid-cols-2 gap-x-10">
+          <SelectProfile />
+          <SelectProfile />
         </div>
-        <SelectProfile />
-      </div>
+
+        {/* Resultados de la Comparación */}
+        <GovernmentPlan />
+      </section>
+
+
     </div>
   );
 }
